@@ -65,6 +65,17 @@ public enum ExcelTypeEnum {
                         return recognitionExcelType(bufferedInputStream);
                     }
                 }
+                // The file type is incorrect. The extension is .xls but the actual file is .xlsx. The file type should be determined directly without relying on the extension name.
+                InputStream is = FileMagic.prepareToCheckMagic(new FileInputStream(file));
+                FileMagic fm = FileMagic.valueOf(is);
+                switch (fm) {
+	                case OLE2:
+	                	return XLS;
+	                case OOXML:
+	                	return XLSX;
+	                default:
+	                    break;
+                }
                 // Use the name to determine the type
                 String fileName = file.getName();
                 if (fileName.endsWith(XLSX.getValue())) {
